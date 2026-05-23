@@ -20,7 +20,7 @@ EN: minimal-token AI-to-AI protocol with fixed fields and compact payloads.
    - nuove chiavi in `snake_case` breve
    - nuove chiavi vanno documentate nel contesto del task corrente
    - valori enumerati quando possibile
-   - caratteri riservati codificati in percent-encoding (`%20`, `%3B`, `%7C`, `%3D`, `%25`)
+   - caratteri riservati in percent-encoding: spazio=`%20`, `;`=`%3B`, `|`=`%7C`, `=`=`%3D`, `%`=`%25`
    - nessuna prosa superflua
 5. Ogni turno include al massimo:
    - 1 obiettivo
@@ -42,11 +42,13 @@ T|19|C|act=run;cmd=pytest%20-k%20auth
 T|20|S|res=pass;next=close
 ```
 
+Nota: se un valore contiene `;`, va codificato come `%3B`.
+
 ### Compressione semantica consigliata
 
 - usare codici stabili (`pass/fail`, `hi/med/low`, `y/n`)
 - evitare ripetizioni: riferirsi a `id` precedente
-- inviare dettagli estesi solo su richiesta esplicita (`Q detail`)
+- inviare dettagli estesi solo su richiesta esplicita (`T|<id>|Q|detail=y`)
 
 ### Regola di fallback
 
