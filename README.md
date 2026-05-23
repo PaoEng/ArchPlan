@@ -7,7 +7,7 @@ Obiettivo: ridurre i token mantenendo chiarezza, stato condiviso e sicurezza.
 ### Regole base
 
 1. **Una riga = un atto**.
-2. Ogni messaggio usa prefisso fisso: `T|ID|K|PAYLOAD`
+2. Ogni messaggio usa prefisso fisso: `T|id|K|PAYLOAD`
 3. `K` (kind) consentiti:
    - `Q` = domanda
    - `A` = risposta
@@ -17,6 +17,7 @@ Obiettivo: ridurre i token mantenendo chiarezza, stato condiviso e sicurezza.
 4. `PAYLOAD` è compatto:
    - chiavi corte (`obj`, `res`, `err`, `next`)
    - valori enumerati quando possibile
+   - spazi codificati come `_` nei valori testuali
    - nessuna prosa superflua
 5. Ogni turno include al massimo:
    - 1 obiettivo
