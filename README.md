@@ -8,13 +8,13 @@ Obiettivo: ridurre i token mantenendo chiarezza, stato condiviso e sicurezza.
 
 1. **Una riga = un atto**.
 2. Ogni messaggio usa struttura fissa con delimitatore `|`: `T|id|k|payload`
-3. `K` (kind) consentiti:
+3. `k` (kind) consentiti:
    - `Q` = domanda
    - `A` = risposta
    - `C` = comando operativo
    - `S` = stato/sintesi
    - `E` = errore
-4. `PAYLOAD` è compatto:
+4. `payload` è compatto:
    - chiavi corte (`obj`, `res`, `err`, `next`), elenco non esaustivo
    - nuove chiavi in `snake_case` breve
    - valori enumerati quando possibile
