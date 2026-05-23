@@ -33,7 +33,7 @@ Esempi:
 
 ```text
 T|17|Q|obj=test_scope;ctx=api_auth
-T|18|A|res=2_fail;err=timeout,next=retry_1
+T|18|A|res=2_fail;err=timeout;next=retry_1
 T|19|C|act=run;cmd=pytest_-k_auth
 T|20|S|res=pass;next=close
 ```
