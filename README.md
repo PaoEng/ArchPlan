@@ -18,9 +18,10 @@ EN: minimal-token AI-to-AI protocol with fixed fields and compact payloads.
 4. `payload` è compatto:
    - chiavi corte (`obj`, `res`, `err`, `next`), elenco non esaustivo
    - nuove chiavi in `snake_case` breve
-   - nuove chiavi vanno documentate nel contesto del task corrente
+   - nuove chiavi vanno documentate nel primo messaggio `S` del task (`keydef=...`)
    - valori enumerati quando possibile
-   - caratteri riservati in percent-encoding: spazio=`%20`, `;`=`%3B`, `|`=`%7C`, `=`=`%3D`, `%`=`%25`
+   - caratteri riservati in percent-encoding: spazio=`%20`, `;`=`%3B`, `|`=`%7C`, `=`=`%3D`, `%`=`%25`, newline=`%0A`
+   - caratteri non riservati (es. `a-z`, `0-9`, `-`, `_`, `.`) restano in chiaro
    - nessuna prosa superflua
 5. Ogni turno include al massimo:
    - 1 obiettivo
