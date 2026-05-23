@@ -7,7 +7,7 @@ Obiettivo: ridurre i token mantenendo chiarezza, stato condiviso e sicurezza.
 ### Regole base
 
 1. **Una riga = un atto**.
-2. Ogni messaggio usa prefisso fisso: `T|id|K|PAYLOAD`
+2. Ogni messaggio usa struttura fissa con delimitatore `|`: `T|id|k|payload`
 3. `K` (kind) consentiti:
    - `Q` = domanda
    - `A` = risposta
@@ -15,9 +15,11 @@ Obiettivo: ridurre i token mantenendo chiarezza, stato condiviso e sicurezza.
    - `S` = stato/sintesi
    - `E` = errore
 4. `PAYLOAD` è compatto:
-   - chiavi corte (`obj`, `res`, `err`, `next`)
+   - chiavi corte (`obj`, `res`, `err`, `next`), elenco non esaustivo
+   - nuove chiavi in `snake_case` breve
    - valori enumerati quando possibile
    - spazi codificati come `_` nei valori testuali
+   - underscore letterale codificato come `__`
    - nessuna prosa superflua
 5. Ogni turno include al massimo:
    - 1 obiettivo
@@ -27,7 +29,7 @@ Obiettivo: ridurre i token mantenendo chiarezza, stato condiviso e sicurezza.
 ### Formato
 
 ```text
-T|<id>|<K>|k1=v1;k2=v2
+T|<id>|<k>|k1=v1;k2=v2
 ```
 
 Esempi:
