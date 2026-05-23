@@ -3,6 +3,7 @@
 ## Protocollo per dialogo AI-to-AI a token minimi
 
 Obiettivo: ridurre i token mantenendo chiarezza, stato condiviso e sicurezza.
+EN: minimal-token AI-to-AI protocol with fixed fields and compact payloads.
 
 ### Regole base
 
@@ -17,9 +18,9 @@ Obiettivo: ridurre i token mantenendo chiarezza, stato condiviso e sicurezza.
 4. `payload` è compatto:
    - chiavi corte (`obj`, `res`, `err`, `next`), elenco non esaustivo
    - nuove chiavi in `snake_case` breve
+   - nuove chiavi vanno documentate nel contesto del task corrente
    - valori enumerati quando possibile
-   - spazi codificati come `_` nei valori testuali
-   - underscore letterale codificato come `__`
+   - caratteri riservati codificati in percent-encoding (`%20`, `%3B`, `%7C`, `%3D`, `%25`)
    - nessuna prosa superflua
 5. Ogni turno include al massimo:
    - 1 obiettivo
@@ -37,7 +38,7 @@ Esempi:
 ```text
 T|17|Q|obj=test_scope;ctx=api_auth
 T|18|A|res=2_fail;err=timeout;next=retry_1
-T|19|C|act=run;cmd=pytest_-k_auth
+T|19|C|act=run;cmd=pytest%20-k%20auth
 T|20|S|res=pass;next=close
 ```
 
