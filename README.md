@@ -3,14 +3,14 @@
 ## Protocollo per dialogo AI-to-AI a token minimi
 
 Obiettivo: ridurre i token mantenendo chiarezza, stato condiviso e sicurezza.
-EN: minimal-token AI-to-AI protocol with fixed fields and compact payloads.
+English summary: minimal-token AI-to-AI protocol with fixed fields and compact payloads.
 
 ### Regole base
 
 1. **Una riga = un atto**.
 2. Ogni messaggio usa struttura fissa con delimitatore `|`: `T|id|k|payload`
    - `id` = intero progressivo univoco per conversazione
-   - al raggiungimento di `2147483647`, riavvio da `1` annunciato con `S|rollover=y`; nessun messaggio in-flight durante il cambio
+   - al raggiungimento di `INT32_MAX (2147483647)`, riavvio da `1` annunciato con `S|rollover=y`; nessun messaggio in-flight durante il cambio
 3. `k` (kind) consentiti:
    - `Q` = domanda
    - `A` = risposta
@@ -21,7 +21,7 @@ EN: minimal-token AI-to-AI protocol with fixed fields and compact payloads.
    - chiavi corte (`obj`, `res`, `err`, `next`), elenco non esaustivo
    - significati base: `obj`=obiettivo, `res`=risultato, `err`=errore, `next`=prossimo passo
    - nuove chiavi in `snake_case` breve
-   - nuove chiavi vanno documentate nel primo messaggio `S` del task (`keydef=<chiave>:<significato>` con `:` interno codificato)
+   - nuove chiavi vanno documentate nel primo messaggio `S` del task (`keydef=<chiave>:<significato>`; eventuali `:` dentro `<significato>` vanno codificati `%3A`)
    - valori enumerati quando possibile
    - caratteri riservati in percent-encoding: spazio=`%20`, `;`=`%3B`, `|`=`%7C`, `=`=`%3D`, `:`=`%3A`, `%`=`%25`, newline=`%0A`, carriage return=`%0D`, tab=`%09`
    - caratteri non riservati RFC3986 (`ALPHA`, `DIGIT`, `-`, `.`, `_`, `~`) restano in chiaro
