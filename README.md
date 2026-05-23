@@ -10,7 +10,7 @@ EN: minimal-token AI-to-AI protocol with fixed fields and compact payloads.
 1. **Una riga = un atto**.
 2. Ogni messaggio usa struttura fissa con delimitatore `|`: `T|id|k|payload`
    - `id` = intero progressivo univoco per conversazione
-   - al raggiungimento di `2147483647`, riavvio da `1` annunciato con messaggio `S`
+   - al raggiungimento di `2147483647`, riavvio da `1` annunciato con `S|rollover=y`; nessun messaggio in-flight durante il cambio
 3. `k` (kind) consentiti:
    - `Q` = domanda
    - `A` = risposta
@@ -21,9 +21,9 @@ EN: minimal-token AI-to-AI protocol with fixed fields and compact payloads.
    - chiavi corte (`obj`, `res`, `err`, `next`), elenco non esaustivo
    - significati base: `obj`=obiettivo, `res`=risultato, `err`=errore, `next`=prossimo passo
    - nuove chiavi in `snake_case` breve
-   - nuove chiavi vanno documentate nel primo messaggio `S` del task (`keydef=<chiave>:<significato>`)
+   - nuove chiavi vanno documentate nel primo messaggio `S` del task (`keydef=<chiave>:<significato>` con `:` interno codificato)
    - valori enumerati quando possibile
-   - caratteri riservati in percent-encoding: spazio=`%20`, `;`=`%3B`, `|`=`%7C`, `=`=`%3D`, `%`=`%25`, newline=`%0A`, carriage return=`%0D`, tab=`%09`
+   - caratteri riservati in percent-encoding: spazio=`%20`, `;`=`%3B`, `|`=`%7C`, `=`=`%3D`, `:`=`%3A`, `%`=`%25`, newline=`%0A`, carriage return=`%0D`, tab=`%09`
    - caratteri non riservati RFC3986 (`ALPHA`, `DIGIT`, `-`, `.`, `_`, `~`) restano in chiaro
    - nessuna prosa superflua
 5. Ogni turno include al massimo:
