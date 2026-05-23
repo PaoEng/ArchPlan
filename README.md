@@ -9,6 +9,7 @@ EN: minimal-token AI-to-AI protocol with fixed fields and compact payloads.
 
 1. **Una riga = un atto**.
 2. Ogni messaggio usa struttura fissa con delimitatore `|`: `T|id|k|payload`
+   - `id` = intero progressivo univoco per conversazione
 3. `k` (kind) consentiti:
    - `Q` = domanda
    - `A` = risposta
@@ -17,10 +18,11 @@ EN: minimal-token AI-to-AI protocol with fixed fields and compact payloads.
    - `E` = errore
 4. `payload` è compatto:
    - chiavi corte (`obj`, `res`, `err`, `next`), elenco non esaustivo
+   - significati base: `obj`=obiettivo, `res`=risultato, `err`=errore, `next`=prossimo passo
    - nuove chiavi in `snake_case` breve
    - nuove chiavi vanno documentate nel primo messaggio `S` del task (`keydef=...`)
    - valori enumerati quando possibile
-   - caratteri riservati in percent-encoding: spazio=`%20`, `;`=`%3B`, `|`=`%7C`, `=`=`%3D`, `%`=`%25`, newline=`%0A`
+   - caratteri riservati in percent-encoding: spazio=`%20`, `;`=`%3B`, `|`=`%7C`, `=`=`%3D`, `%`=`%25`, newline=`%0A`, carriage return=`%0D`, tab=`%09`
    - caratteri non riservati (es. `a-z`, `0-9`, `-`, `_`, `.`) restano in chiaro
    - nessuna prosa superflua
 5. Ogni turno include al massimo:
@@ -43,13 +45,11 @@ T|19|C|act=run;cmd=pytest%20-k%20auth
 T|20|S|res=pass;next=close
 ```
 
-Nota: se un valore contiene `;`, va codificato come `%3B`.
-
 ### Compressione semantica consigliata
 
 - usare codici stabili (`pass/fail`, `hi/med/low`, `y/n`)
 - evitare ripetizioni: riferirsi a `id` precedente
-- inviare dettagli estesi solo su richiesta esplicita (`T|<id>|Q|detail=y`)
+- inviare dettagli estesi solo su richiesta esplicita (`T|<id>|Q|obj=detail`)
 
 ### Regola di fallback
 
