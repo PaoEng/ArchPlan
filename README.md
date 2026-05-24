@@ -74,7 +74,7 @@ Prompt umano → [h2c] → [ARCH:PLAN] → [BUILD] → [TEST] → Done
 
 L'h2c utilizza circa il **41%** dei token rispetto al prompt umano.
 
-
+[Usa questo file per fare un test in autonomia](Test.md)
 ---
 
 ## Skills
