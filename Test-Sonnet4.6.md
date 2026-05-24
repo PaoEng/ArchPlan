@@ -630,6 +630,10 @@ id:hybrid-search|status:0|token:1847|notes:stress_test_v1.1_completato_senza_deg
 
 **Test 5 – Stress Test v1.1:** 61 msg, scenario hybrid search engine. `CTX:PRUNE` ogni 5 msg, `CTX:COMPACT` a msg 20, 40, 60. 4 cicli fail→fix, 31 test finali. Nessun break point.
 
+Nota sul break point del Test 5: Il modello si è fermato al messaggio 61 non per cedimento del protocollo né per saturazione del contesto, ma perché lo scenario (hybrid search engine) era semanticamente completo: tutte le feature erano implementate, testate e documentate, e la catena si è chiusa ordinatamente con ORCH:END. Con CTX:COMPACT attivo ogni 20 msg, la storia effettiva in contesto è rimasta costantemente ridotta a un singolo snapshot, rendendo il costo computativo quasi costante. 
+
+La catena avrebbe potuto proseguire oltre senza degradazione percepibile aggiungendo nuove feature o cicli di test.
+
 ---
 
 ## 2. Tabella riassuntiva
