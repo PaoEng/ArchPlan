@@ -54,6 +54,8 @@ Niente altro. Zero spiegazioni, zero markdown, zero testo libero.
 | `[STATE:FINDINGS]` | Risultati analisi |
 | `[ORCH:END]` | Chiusura ciclo |
 | `[SKILL:PROMPT]` | Definizione agente specializzato |
+| `[CTX:PRUNE]` | Pulizia entità attive ogni 5 msg |
+| `[CTX:COMPACT]` | Compattazione storia cumulativa ogni 20 msg |
 
 ### Flusso tipico
 
@@ -83,11 +85,12 @@ Ogni agente nella catena è definito da una skill markdown. Si copia come system
 
 | Skill | File | Input | Output |
 |---|---|---|---|
-| **h2c** | `skills/h2c_v2.md` | Prompt umano | `[ARCH:PLAN]` |
+| **h2c v1.1** | `skills/h2c_v3.md` | Prompt umano | `[ARCH:PLAN]` |
 | **orch** | `skills/orch_v1.md` | Blocchi agenti | Instradamento |
 | **build** | `skills/build.md` | `[BUILD:EXEC]` | Codice + `[BUILD:DONE]` |
 | **test** | `skills/test.md` | `[TEST:RUN]` | `[TEST:PASS/FAIL]` |
-
+| `[CTX:PRUNE]` | Pulizia entità attive ogni 5 msg |
+| `[CTX:COMPACT]` | Compattazione storia cumulativa ogni 20 msg |
 ---
 
 ## Vantaggi
@@ -104,7 +107,7 @@ Ogni agente nella catena è definito da una skill markdown. Si copia come system
 
 ## Iniziare in 30 secondi
 
-1. **Copia** `skills/h2c_v2.md` come system prompt in una nuova chat
+1. **Copia** `skills/h2c_v3.md` come system prompt in una nuova chat
 2. **Incolla** un prompt umano qualsiasi
 3. **Ricevi** `[ARCH:PLAN]` pronto da passare a un builder
 
