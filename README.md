@@ -66,11 +66,11 @@ Prompt umano → [h2c] → [ARCH:PLAN] → [BUILD] → [TEST] → Done
 
 ## Esempi
 
- [Api meteo](example/api-meteo.md)
+ [Api meteo](examples/api-meteo.md)
 
  L'h2c utilizza circa il **35%** dei token rispetto al prompt umano.   
 
-[Todo console](example/todo-console.md)
+[Todo console](examples/todo-console.md)
 
 L'h2c utilizza circa il **41%** dei token rispetto al prompt umano.
 
