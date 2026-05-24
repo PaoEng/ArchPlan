@@ -122,7 +122,10 @@ pruned_history:msg_X_to_Y
 snapshot:[file1~rev,file2~rev,...]
 baseline:msg_N
 restart_from:freeze
-
+- Si emette una volta sola, quando COMPACT non basta più (~100-110 msg)
+- Congela i file correnti come nuova baseline
+- Archivia la storia precedente (non la cancella)
+- Dopo FREEZE: contatori PRUNE e COMPACT ripartono da zero
 ---
 
 ## 4. STATE:FINDINGS / STATE:ACK
