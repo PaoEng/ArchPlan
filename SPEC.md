@@ -116,6 +116,13 @@ pruned_history:msg_X_to_Y
 - summary: max 5 voci
 - pruned_history: range messaggi rimossi dalla finestra
 
+### 3.5 CTX:FREEZE (NUOVO v1.2)
+
+[CTX:FREEZE]
+snapshot:[file1~rev,file2~rev,...]
+baseline:msg_N
+restart_from:freeze
+
 ---
 
 ## 4. STATE:FINDINGS / STATE:ACK

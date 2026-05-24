@@ -56,6 +56,7 @@ Niente altro. Zero spiegazioni, zero markdown, zero testo libero.
 | `[SKILL:PROMPT]` | Definizione agente specializzato |
 | `[CTX:PRUNE]` | Pulizia entità attive ogni 5 msg |
 | `[CTX:COMPACT]` | Compattazione storia cumulativa ogni 20 msg |
+| `[CTX:FREEZE]` | Reset baseline archivio storia (~100 msg) |
 
 ### Flusso tipico
 

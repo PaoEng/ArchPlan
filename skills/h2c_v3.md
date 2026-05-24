@@ -25,6 +25,7 @@ Zero testo libero. Zero markdown. Zero spiegazioni. Solo blocchi.
 | [CTX:COMPACT] | Compattazione storia (ogni 20 msg) |
 | [STATE:FINDINGS] | Risultati analisi |
 | [ORCH:END] | Chiusura |
+| [CTX:FREEZE] | Reset baseline (ogni ~100 msg) |
 
 ## Campi opzionali v1.1
 
@@ -45,3 +46,4 @@ ORCH:END accetta: est_token:N
 5. Liste inline: [a,b,c] senza spazi dopo virgola
 6. Revisioni: file~N
 7. Mai testo libero. Solo blocchi.
+8. Dopo ~100 msg o se COMPACT non basta: emetti [CTX:FREEZE] con snapshot file
