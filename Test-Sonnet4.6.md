@@ -673,7 +673,15 @@ I campi v1.1 (`rev:`, `after:`, `base_rev:`, `pass_count:`, `fail_count:`) non s
 
 ## 5. Conclusione
 
-H2C v1.1 è un protocollo solido per catene agente-a-agente. Il risparmio token reale oscilla tra il 77% (casi minimi) e il 93% (pipeline complesse), con una media intorno all'88-90% — in linea con le promesse del README. L'introduzione di `CTX:PRUNE` e `CTX:COMPACT` risolve il problema strutturale di v1.0 sulle catene lunghe: lo break point si sposta da ~40 msg a oltre 100, ed è determinato esclusivamente dal context window del modello, non dal protocollo. I campi `rev:`/`after:` aggiungono un layer di tracciabilità causale che abilita scenari di orchestrazione parallela non possibili in v1.0. La specifica è pronta per workload reali; i gap principali da colmare sono la formalizzazione delle regole di PRUNE nel SPEC.md e la gestione dei cicli fail paralleli.
+H2C v1.1 è un protocollo solido per catene agente-a-agente. 
+
+Il risparmio token reale oscilla tra il 77% (casi minimi) e il 93% (pipeline complesse), con una media intorno all'88-90% — in linea con le promesse del README. 
+
+L'introduzione di `CTX:PRUNE` e `CTX:COMPACT` risolve il problema strutturale di v1.0 sulle catene lunghe: lo break point si sposta da ~40 msg a oltre 100, ed è determinato esclusivamente dal context window del modello, non dal protocollo. 
+
+I campi `rev:`/`after:` aggiungono un layer di tracciabilità causale che abilita scenari di orchestrazione parallela non possibili in v1.0. 
+
+La specifica è pronta per workload reali; i gap principali da colmare sono la formalizzazione delle regole di PRUNE nel SPEC.md e la gestione dei cicli fail paralleli.
 
 ---
 
