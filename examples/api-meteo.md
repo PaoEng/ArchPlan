@@ -34,8 +34,7 @@ L’API deve essere ben strutturata, modulare e facilmente estendibile.
 
 
 [ARCH:PLAN]
-id:api-meteo|fw:python3.11|lib:fastapi,httpx,cachetools|auth:APIKey::env(OPENWEATHER_API_KEY)|pattern:router,service|tools:[weather:{current,forecast}]|struct:[main.py,routers/weather.py,services/{weather_service.py,cache_service.py},models/weather.py,config.py,.env]|deps:OpenWeatherMap|note:cache TTL 10min,rate-limit 60req/min,httpx async
-[ARCH:DONE]
+id:api-meteo|fw:python3.11|lib:fastapi,httpx,cachetools|auth:APIKey::env(OPENWEATHER_API_KEY)|pattern:router,service|tools:[weather:{current,forecast}]|struct:[main.py,routers/weather.py,services/{weather_service.py,cache_service.py},models/weather.py,config.py,.env]|deps:OpenWeatherMap|notes:[cache_TTL_10min,rate-limit_60req-min,httpx_async]
 
 
 ### 🔍 Comparazione dettagliata **Copilot**

@@ -1,6 +1,6 @@
 # h2c Protocol (Human-to-Compressed)
 
-![Human-to-Compressed)](1779633660140.png)
+![Human-to-Compressed](1779633660140.png)
 
 **Protocollo aperto per dialogo AI-to-AI a token minimi.**
 Grammatica a blocchi compressi, autodescrittiva, zero-shot, cross-model.
@@ -60,9 +60,13 @@ Niente altro. Zero spiegazioni, zero markdown, zero testo libero.
 
 ### Flusso tipico
 
-Prompt umano → [h2c] → [ARCH:PLAN] → [BUILD] → [TEST] → Done
-↑ ↓
-└── [BUILD:FIX] ←── Fail
+```
+Prompt umano → [h2c Architect] → [ARCH:PLAN] → [BUILD:EXEC] → [BUILD:DONE] → [TEST:RUN] → [TEST:PASS] → [ORCH:END]
+                                                                                  │
+                                                                              [TEST:FAIL]
+                                                                                  │
+                                                                              [BUILD:FIX] ──► [BUILD:EXEC] (retry)
+```
 
 
 ---
@@ -83,7 +87,7 @@ L'h2c utilizza circa il **41%** dei token rispetto al prompt umano.
 
 ## Test eseguiti
 
-[Claud sonnet 4.6](Test-Sonnet4.6.md)
+[Claude Sonnet 4.6 (test v1.1, storico)](archive/test-sonnet-4.6-v1.1.md)
 
 [Opus 4.7](opus4_7/REPORT.md)
 
@@ -93,12 +97,11 @@ Ogni agente nella catena è definito da una skill markdown. Si copia come system
 
 | Skill | File | Input | Output |
 |---|---|---|---|
-| **h2c v1.1** | `skills/h2c_v3.md` | Prompt umano | `[ARCH:PLAN]` |
-| **orch** | `skills/orch_v1.md` | Blocchi agenti | Instradamento |
-| **build** | `skills/build.md` | `[BUILD:EXEC]` | Codice + `[BUILD:DONE]` |
-| **test** | `skills/test.md` | `[TEST:RUN]` | `[TEST:PASS/FAIL]` |
-| `[CTX:PRUNE]` | Pulizia entità attive ogni 5 msg |
-| `[CTX:COMPACT]` | Compattazione storia cumulativa ogni 20 msg |
+| **h2c Architect** | `skills/h2c_architect.md` | Prompt umano | `[STATE:ACK]` + `[ARCH:PLAN]` |
+| **h2c Orchestrator** | `skills/h2c_orchestrator.md` | Blocchi agenti | Instradamento + retry tracking |
+| **h2c Builder** | `skills/h2c_builder.md` | `[BUILD:EXEC]` | Codice + `[BUILD:DONE]` |
+| **h2c Tester** | `skills/h2c_tester.md` | `[TEST:RUN]` | `[TEST:PASS]` / `[TEST:FAIL]` |
+
 ---
 
 ## Vantaggi
@@ -115,11 +118,11 @@ Ogni agente nella catena è definito da una skill markdown. Si copia come system
 
 ## Iniziare in 30 secondi
 
-1. **Copia** `skills/h2c_v3.md` come system prompt in una nuova chat
+1. **Copia** `skills/h2c_architect.md` come system prompt in una nuova chat
 2. **Incolla** un prompt umano qualsiasi
 3. **Ricevi** `[ARCH:PLAN]` pronto da passare a un builder
 
-Per l'orchestrazione automatica: `skills/orch_v1.md`
+Per l'orchestrazione automatica: `skills/h2c_orchestrator.md`
 
 ---
 
