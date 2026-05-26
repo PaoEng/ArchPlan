@@ -1,0 +1,8 @@
+*.md linguist-documentation
+index.html linguist-documentation
+llms.txt linguist-documentation
+llms-full.txt linguist-documentation
+CHANGELOG.md linguist-documentation
+CONTRIBUTING.md linguist-documentation
+Test.md linguist-documentation
+ANALYSIS.md linguist-documentation
