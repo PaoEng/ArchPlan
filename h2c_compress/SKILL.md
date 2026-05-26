@@ -26,6 +26,55 @@ Obiettivo: prendere un prompt in linguaggio naturale e restituire il blocco H2C
 equivalente, che l'utente possa usare al posto del prompt originale per ridurre
 i token in input nelle esecuzioni successive.
 
+## ⚙️ Requisiti modello (leggi PRIMA di usare la skill)
+
+Questa skill richiede **instruction-following preciso su formato rigido** per:
+1. Distinguere payload (testo da comprimere) da istruzioni (testo da eseguire)
+2. Produrre il blocco H2C nel formato canonico `[BLOCK:TYPE]` su **UNA SOLA RIGA** con `|` come separatore di campi
+3. Rispettare le regole anti-hallucination su CAMPI e su METRICHE senza inventare
+
+### 📊 Benchmark misurato su 4 modelli (2026-05-26)
+
+Test reale sullo stesso prompt complesso (`H2C-repo-redesign`, ~2000 token NL):
+
+| Tier | Modello | Header canonical | Single-line | Field semantics | Metriche oneste |
+|---|---|---|---|---|---|
+| 🟢 **Frontier** | Claude Sonnet 4.5+ / Opus 4+ | atteso ✅ | atteso ✅ | atteso ✅ | atteso ✅ |
+| 🟢 **Frontier** | GPT-5.4 (xhigh) | `H2C[v1]` ⚠️ semi | ❌ multi-line | ✅ dot-notation namespacing | ✅ |
+| 🟡 **Mid** | GPT-4.1 | `H2Cv1:` dialect ❌ | ❌ multi-line | ✅ | ✅ |
+| 🟡 **Mid** | Claude Haiku 4.5 | `H2Cv1:` dialect ❌ | ❌ multi-line | ✅ | ❌ **inventa** ("92% reduction" reali misurati 67%) |
+| 🔴 **Sotto soglia** | GPT-5 mini | `[ARCH:PLAN]` ✅ ma forma | ✅ | ❌ misuse (`lib:python`, `tools:git,gh,ci`) | ❌ inventa |
+| 🔴 **Sotto soglia** | GPT-4o mini, Gemini Flash/Nano, Llama < 70B, Mistral 7B | attesi stessi problemi | — | — | — |
+
+### Comportamento atteso per tier
+
+🟢 **Frontier (Claude Sonnet 4.5+/Opus 4+, GPT-5 full):**
+Produci canonical strict — `[BLOCK:TYPE]` su riga 1, tutti i campi su riga 2 separati da `|`.
+Regole A/B + metriche passano. Output interoperabile con parser H2C ufficiali.
+
+🟡 **Mid (GPT-4.1, Haiku 4.5):**
+Produrrai con alta probabilità un **dialect** (`H2Cv1:` multi-line con `;`). Il contenuto
+resta affidabile se rispetti le Regole A+B (anti-hallucination).
+- **Se sei Haiku 4.5: NON inventare le metriche di compressione.** Calcola davvero i
+  token con `tiktoken` (o fallback `len/3.2`) PRIMA di scrivere la %. Mai scrivere
+  frasi come "92% reduction" o "4500 words → 450 chars" senza misurare.
+
+🔴 **Sotto soglia (GPT-5 mini, GPT-4o mini, Llama < 70B):**
+Rischio alto di invenzione contenuti — campi standard riempiti con dati non presenti
+nel prompt NL (es. `lib:python,js,markdown` quando nessun linguaggio è citato).
+**Avvisa l'utente in chiusura** che il modello non è adatto a questa skill e suggerisci
+upgrade prima di fidarsi del risultato.
+
+### Cosa fare se NON sei un modello frontier
+
+Produci comunque il blocco — sarà semanticamente equivalente e funzionerà zero-shot
+in qualunque LLM downstream. Però rispetta queste tre cose non negoziabili:
+
+1. **Calcola davvero i token** con `tiktoken` o fallback `len/3.2`. Mai inventare le %.
+2. **Avvisa l'utente in chiusura** che il formato emesso è dialect, non strict H2C v1.2.
+3. **Suggerisci upgrade modello** se l'utente ha bisogno di interoperabilità con parser
+   H2C ufficiali (validator, transpiler, compiler-pipeline).
+
 ## Quando attivare
 
 L'utente ha un prompt scritto (lo incolla nel messaggio o ne descrive il
@@ -170,6 +219,64 @@ davvero eseguire un prompt non invoca `h2c_compress`.
 - Non comprimere prompt che non sono task tecnici (chiacchiere, domande,
   brief di meeting, email): per quelli H2C non porta valore e la compressione
   perde leggibilità.
+
+## 🛡️ Anti-hallucination — regole di mappatura strict
+
+Sono i due errori più comuni nei modelli che generano H2C. Vanno applicate
+**sempre**, in aggiunta al workflow operativo.
+
+### Regola A — Zero invenzione
+
+Ogni valore nel blocco H2C deve provenire da una **frase identificabile del
+prompt NL**. Non aggiungere mai informazioni "ragionevoli" o "implicite" che
+non sono scritte nel testo originale.
+
+Esempi di violazione (da NON fare):
+- Prompt NL non menziona linguaggi → l'agent emette `lib:python,js,markdown` ❌
+- Prompt NL non parla di git/CI → l'agent emette `tools:git,gh,ci` ❌
+- Prompt NL non specifica auth → l'agent emette `auth:APIKey` ❌
+- Prompt NL non dice "REST" → l'agent emette `pattern:REST` ❌
+
+Se un campo standard non ha un valore tratto dal testo, **omettilo**. È meglio
+un blocco H2C minimo e fedele che uno ricco e inventato. Un campo mancante
+si recupera con una nuova versione del prompt; un campo inventato si propaga
+silenziosamente nel sistema downstream e causa bug nascosti.
+
+**Auto-check finale**: prima di emettere il blocco, per ogni valore chiediti
+"in quale frase esatta del prompt NL questo è scritto?". Se non sai
+rispondere → rimuovi il valore.
+
+### Regola B — Non forzare i campi standard
+
+I campi `fw:`, `lib:`, `auth:`, `pattern:`, `tools:`, `struct:`, `deps:`
+hanno una **semantica precisa** (vedi tabella nella sezione "Flusso
+operativo / 2."). Non riutilizzarli per contenuti che non rispettano quella
+semantica solo per "riempire" il blocco.
+
+Esempi di violazione (da NON fare):
+- `fw:` = "framework/linguaggio" (es. `python3.11`, `node20`, `dotnet8`).
+  ❌ Non metterci domini di expertise (`fw:LLM-infra,multi-agent`),
+  obiettivi (`fw:reduce-tokens`), o concetti astratti.
+- `pattern:` = "pattern architetturale del progetto da costruire" (es.
+  `router,service`, `MVC`, `CQRS`, `event-driven`).
+  ❌ Non metterci goal di riposizionamento (`pattern:cognitive-bytecode`)
+  o tagline.
+- `tools:` = "operazioni che il sistema espone" (es. `[weather:{current,forecast}]`,
+  `[user:{create,delete}]`).
+  ❌ Non metterci strumenti di sviluppo (`tools:git,gh,ci`) o tecnologie.
+- `deps:` = "servizi/API esterne consumate" (es. `OpenWeatherMap`, `Stripe`).
+  ❌ Non metterci framework di ecosistema generico se non vengono integrati
+  realmente come dipendenza operativa.
+
+**Quando un'informazione non rientra in nessun campo standard**: mettila in
+`notes:[...]` come token-word condensato (es. `notes:[role_protocol-architect,
+goal_reduce-ctx-pollution,style_RFC-grade]`). `notes:` esiste apposta per
+contenuti che non hanno un campo dedicato. È sempre meglio un `notes:`
+ricco che un campo standard usato male.
+
+**Auto-check finale**: prima di emettere il blocco, per ogni campo standard
+usato chiediti "il valore di questo campo rispetta la semantica documentata
+nella SKILL?". Se no → sposta il contenuto in `notes:` e ometti il campo.
 
 ## Esempio (dal repo H2C, api-meteo)
 
